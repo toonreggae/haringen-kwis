@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Brugpuzzel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: #0a0a0f;
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+font-family: ‘Crimson Text’, serif;
+}
+
+.poster {
+width: 700px;
+background: #080810;
+border: 2px solid #3a2a10;
+box-shadow: 0 0 60px rgba(255,160,30,0.15), inset 0 0 80px rgba(0,0,0,0.8);
+position: relative;
+overflow: hidden;
+}
+
+/* Subtle grain texture */
+.poster::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 10;
+opacity: 0.4;
+}
+
+.title-area {
+text-align: center;
+padding: 28px 20px 10px;
+position: relative;
+z-index: 2;
+}
+
+.title-area h1 {
+font-family: ‘Cinzel’, serif;
+font-size: 1.9rem;
+font-weight: 900;
+color: #f0c060;
+letter-spacing: 4px;
+text-shadow: 0 0 30px rgba(255,180,50,0.5);
+}
+
+.title-area p {
+font-size: 1rem;
+color: #a08050;
+font-style: italic;
+margin-top: 4px;
+letter-spacing: 1px;
+}
+
+.divider {
+width: 60%;
+height: 1px;
+background: linear-gradient(90deg, transparent, #c08030, transparent);
+margin: 10px auto;
+}
+
+svg.scene {
+display: block;
+width: 100%;
+}
+
+.rules-area {
+padding: 14px 36px 24px;
+position: relative;
+z-index: 2;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px 24px;
+}
+
+.rule-block {
+background: rgba(255,160,30,0.05);
+border: 1px solid rgba(255,160,30,0.15);
+border-radius: 8px;
+padding: 10px 14px;
+}
+
+.rule-block h3 {
+font-family: ‘Cinzel’, serif;
+font-size: 0.65rem;
+letter-spacing: 2px;
+color: #c08030;
+text-transform: uppercase;
+margin-bottom: 5px;
+}
+
+.rule-block p {
+font-size: 0.92rem;
+color: #d0b080;
+line-height: 1.45;
+}
+
+.question-banner {
+background: rgba(255,140,20,0.08);
+border-top: 1px solid rgba(255,160,30,0.2);
+border-bottom: 1px solid rgba(255,160,30,0.2);
+padding: 12px 36px;
+text-align: center;
+margin: 0 0 4px;
+}
+
+.question-banner p {
+font-family: ‘Cinzel’, serif;
+font-size: 1rem;
+color: #f0c060;
+letter-spacing: 1px;
+}
+
+.time-badge {
+display: inline-block;
+background: #f0c060;
+color: #1a0800;
+font-family: ‘Cinzel’, serif;
+font-weight: 900;
+font-size: 1.1rem;
+padding: 2px 12px;
+border-radius: 4px;
+margin-left: 6px;
+}
+</style>
+
+</head>
+<body>
+<div class="poster">
+
+  <div class="title-area">
+    <h1>DE BRUGPUZZEL</h1>
+    <p>Een raadsel van licht en duisternis</p>
+  </div>
+  <div class="divider"></div>
+
+  <!-- SVG SCENE -->
+
+  <svg class="scene" viewBox="0 0 700 310" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Night sky gradient -->
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#020208"/>
+        <stop offset="100%" stop-color="#0d1a2e"/>
+      </linearGradient>
+
+```
+  <!-- Ground gradient -->
+  <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#1a1008"/>
+    <stop offset="100%" stop-color="#0a0804"/>
+  </linearGradient>
+
+  <!-- Torch glow -->
+  <radialGradient id="torchglow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#ffdd60" stop-opacity="0.9"/>
+    <stop offset="40%" stop-color="#ff9020" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#ff6000" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- Bridge light cone -->
+  <radialGradient id="bridgelight" cx="50%" cy="0%" r="90%">
+    <stop offset="0%" stop-color="#ffcc40" stop-opacity="0.12"/>
+    <stop offset="100%" stop-color="#ff8800" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- Water shimmer -->
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#0a1a2a"/>
+    <stop offset="100%" stop-color="#060e16"/>
+  </linearGradient>
+
+  <!-- Moon glow -->
+  <radialGradient id="moonglow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#e8f0ff" stop-opacity="0.9"/>
+    <stop offset="50%" stop-color="#c0cce8" stop-opacity="0.3"/>
+    <stop offset="100%" stop-color="#8090b0" stop-opacity="0"/>
+  </radialGradient>
+
+  <filter id="blur2">
+    <feGaussianBlur stdDeviation="2"/>
+  </filter>
+  <filter id="blur6">
+    <feGaussianBlur stdDeviation="6"/>
+  </filter>
+  <filter id="blur12">
+    <feGaussianBlur stdDeviation="12"/>
+  </filter>
+</defs>
+
+<!-- SKY -->
+<rect width="700" height="310" fill="url(#sky)"/>
+
+<!-- Stars -->
+<g fill="#ffffff">
+  <circle cx="45" cy="18" r="0.8" opacity="0.9"/>
+  <circle cx="88" cy="35" r="0.6" opacity="0.7"/>
+  <circle cx="130" cy="12" r="1" opacity="0.8"/>
+  <circle cx="175" cy="28" r="0.7" opacity="0.6"/>
+  <circle cx="210" cy="8" r="0.9" opacity="0.9"/>
+  <circle cx="265" cy="22" r="0.6" opacity="0.7"/>
+  <circle cx="60" cy="50" r="0.5" opacity="0.5"/>
+  <circle cx="490" cy="15" r="0.8" opacity="0.9"/>
+  <circle cx="540" cy="32" r="0.6" opacity="0.7"/>
+  <circle cx="580" cy="10" r="1" opacity="0.8"/>
+  <circle cx="620" cy="25" r="0.7" opacity="0.6"/>
+  <circle cx="660" cy="8" r="0.9" opacity="0.9"/>
+  <circle cx="640" cy="48" r="0.5" opacity="0.5"/>
+  <circle cx="700" cy="30" r="0.6" opacity="0.6"/>
+  <circle cx="310" cy="14" r="0.7" opacity="0.7"/>
+  <circle cx="440" cy="40" r="0.5" opacity="0.5"/>
+</g>
+
+<!-- Moon -->
+<circle cx="600" cy="50" r="28" fill="url(#moonglow)" filter="url(#blur6)"/>
+<circle cx="600" cy="50" r="18" fill="#d8e4f8" opacity="0.15"/>
+<circle cx="600" cy="50" r="14" fill="#e8f0ff" opacity="0.12"/>
+
+<!-- Distant mountains / cliffs -->
+<polygon points="0,200 80,120 160,160 220,110 320,150 380,105 460,145 520,118 600,148 700,130 700,215 0,215" fill="#0d1520" opacity="0.8"/>
+<polygon points="0,215 60,170 140,195 200,158 300,185 400,155 500,178 580,162 700,180 700,215" fill="#0a1018" opacity="0.9"/>
+
+<!-- WATER (gorge) -->
+<rect x="200" y="220" width="300" height="90" fill="url(#water)"/>
+<!-- Water shimmer lines -->
+<line x1="210" y1="235" x2="280" y2="235" stroke="#1a3040" stroke-width="1" opacity="0.6"/>
+<line x1="300" y1="242" x2="390" y2="242" stroke="#1a3040" stroke-width="1" opacity="0.5"/>
+<line x1="220" y1="255" x2="320" y2="255" stroke="#1a3040" stroke-width="1" opacity="0.4"/>
+<line x1="370" y1="260" x2="480" y2="260" stroke="#1a3040" stroke-width="1" opacity="0.4"/>
+<!-- Moon reflection in water -->
+<ellipse cx="350" cy="250" rx="20" ry="6" fill="#c0cce8" opacity="0.06"/>
+
+<!-- LEFT CLIFF -->
+<polygon points="0,180 0,310 220,310 220,220 180,215 150,210 100,215 50,205" fill="#1a1208"/>
+<polygon points="0,200 0,310 200,310 200,225 160,220 120,218 60,215" fill="#100c06"/>
+
+<!-- RIGHT CLIFF -->
+<polygon points="700,185 700,310 480,310 480,220 510,215 560,210 620,215 670,205" fill="#1a1208"/>
+<polygon points="700,200 700,310 500,310 500,225 540,220 580,218 640,215" fill="#100c06"/>
+
+<!-- BRIDGE STRUCTURE -->
+<!-- Bridge shadow/glow underneath -->
+<rect x="195" y="205" width="310" height="40" fill="url(#bridgelight)" filter="url(#blur6)"/>
+
+<!-- Bridge planks (bottom detail) -->
+<g stroke="#3a2a10" stroke-width="0.5" opacity="0.6">
+  <line x1="230" y1="213" x2="230" y2="222"/>
+  <line x1="250" y1="212" x2="250" y2="222"/>
+  <line x1="270" y1="211" x2="270" y2="222"/>
+  <line x1="290" y1="211" x2="290" y2="222"/>
+  <line x1="310" y1="210" x2="310" y2="222"/>
+  <line x1="330" y1="210" x2="330" y2="222"/>
+  <line x1="350" y1="210" x2="350" y2="222"/>
+  <line x1="370" y1="210" x2="370" y2="222"/>
+  <line x1="390" y1="211" x2="390" y2="222"/>
+  <line x1="410" y1="211" x2="410" y2="222"/>
+  <line x1="430" y1="212" x2="430" y2="222"/>
+  <line x1="450" y1="213" x2="450" y2="222"/>
+  <line x1="470" y1="214" x2="470" y2="222"/>
+</g>
+
+<!-- Main bridge deck -->
+<rect x="200" y="210" width="300" height="14" rx="2" fill="#2a1c0a"/>
+<rect x="200" y="210" width="300" height="3" fill="#3d2a10" opacity="0.8"/>
+
+<!-- Bridge ropes/cables - left side -->
+<line x1="185" y1="190" x2="350" y2="210" stroke="#4a3818" stroke-width="1.5"/>
+<line x1="185" y1="190" x2="200" y2="210" stroke="#4a3818" stroke-width="2"/>
+
+<!-- Bridge ropes/cables - right side -->
+<line x1="515" y1="190" x2="350" y2="210" stroke="#4a3818" stroke-width="1.5"/>
+<line x1="515" y1="190" x2="500" y2="210" stroke="#4a3818" stroke-width="2"/>
+
+<!-- Bridge posts -->
+<rect x="182" y="175" width="8" height="50" rx="2" fill="#3a2810"/>
+<rect x="510" y="175" width="8" height="50" rx="2" fill="#3a2810"/>
+
+<!-- Vertical rope hangers -->
+<g stroke="#3a2810" stroke-width="1" opacity="0.7">
+  <line x1="240" y1="197" x2="240" y2="210"/>
+  <line x1="270" y1="194" x2="270" y2="210"/>
+  <line x1="300" y1="192" x2="300" y2="210"/>
+  <line x1="330" y1="191" x2="330" y2="210"/>
+  <line x1="360" y1="191" x2="360" y2="210"/>
+  <line x1="390" y1="192" x2="390" y2="210"/>
+  <line x1="420" y1="194" x2="420" y2="210"/>
+  <line x1="450" y1="197" x2="450" y2="210"/>
+</g>
+
+<!-- TORCH on bridge (center) - main light source -->
+<!-- Glow layers -->
+<circle cx="348" cy="198" r="55" fill="url(#torchglow)" filter="url(#blur12)" opacity="0.6"/>
+<circle cx="348" cy="198" r="30" fill="url(#torchglow)" filter="url(#blur6)" opacity="0.8"/>
+<!-- Torch handle -->
+<rect x="344" y="196" width="5" height="16" rx="2" fill="#5a3a18"/>
+<!-- Flame -->
+<ellipse cx="346" cy="193" rx="5" ry="7" fill="#ffdd40" opacity="0.9"/>
+<ellipse cx="346" cy="191" rx="3" ry="5" fill="#fff5a0" opacity="0.95"/>
+<ellipse cx="347" cy="195" rx="6" ry="4" fill="#ff8800" opacity="0.7"/>
+
+
+<!-- ===== PERSONS ===== -->
+
+<!-- All 4 persons on LEFT cliff (x = 20, 55, 90, 125 — all safely left of bridge at x=200) -->
+
+<!-- PERSON 1 — 1 min — x center=25 -->
+<circle cx="25" cy="186" r="7" fill="#e8c090"/>
+<rect x="20" y="192" width="10" height="20" rx="3" fill="#2a5080"/>
+<rect x="21" y="210" width="4" height="9" rx="2" fill="#1a3860"/>
+<rect x="27" y="210" width="4" height="9" rx="2" fill="#1a3860"/>
+<rect x="11" y="194" width="9" height="4" rx="2" fill="#2a5080"/>
+<rect x="30" y="194" width="9" height="4" rx="2" fill="#2a5080"/>
+<rect x="2" y="172" width="46" height="16" rx="8" fill="#0d1f35" stroke="#2a6090" stroke-width="1"/>
+<text x="25" y="183" text-anchor="middle" font-family="'Cinzel', serif" font-size="8" fill="#60b0ff" font-weight="700">1 min</text>
+
+<!-- PERSON 2 — 2 min — x center=60 -->
+<circle cx="60" cy="186" r="7" fill="#d4a870"/>
+<rect x="55" y="192" width="10" height="20" rx="3" fill="#405020"/>
+<rect x="56" y="210" width="4" height="9" rx="2" fill="#283418"/>
+<rect x="62" y="210" width="4" height="9" rx="2" fill="#283418"/>
+<rect x="46" y="194" width="9" height="4" rx="2" fill="#405020"/>
+<rect x="65" y="194" width="9" height="4" rx="2" fill="#405020"/>
+<rect x="37" y="172" width="46" height="16" rx="8" fill="#0d1f0d" stroke="#406030" stroke-width="1"/>
+<text x="60" y="183" text-anchor="middle" font-family="'Cinzel', serif" font-size="8" fill="#80cc60" font-weight="700">2 min</text>
+
+<!-- PERSON 3 — 5 min — x center=100 -->
+<circle cx="100" cy="186" r="7" fill="#c09060"/>
+<rect x="95" y="192" width="10" height="20" rx="3" fill="#502010"/>
+<rect x="96" y="210" width="4" height="9" rx="2" fill="#381408"/>
+<rect x="102" y="210" width="4" height="9" rx="2" fill="#381408"/>
+<rect x="86" y="194" width="9" height="4" rx="2" fill="#502010"/>
+<rect x="105" y="194" width="9" height="4" rx="2" fill="#502010"/>
+<rect x="77" y="172" width="46" height="16" rx="8" fill="#1f0d00" stroke="#804020" stroke-width="1"/>
+<text x="100" y="183" text-anchor="middle" font-family="'Cinzel', serif" font-size="8" fill="#ff9040" font-weight="700">5 min</text>
+
+<!-- PERSON 4 — 7 min — x center=140 -->
+<circle cx="140" cy="186" r="7" fill="#b08060"/>
+<rect x="135" y="192" width="10" height="20" rx="3" fill="#4a1a40"/>
+<rect x="136" y="210" width="4" height="9" rx="2" fill="#321030"/>
+<rect x="142" y="210" width="4" height="9" rx="2" fill="#321030"/>
+<rect x="126" y="194" width="9" height="4" rx="2" fill="#4a1a40"/>
+<rect x="145" y="194" width="9" height="4" rx="2" fill="#4a1a40"/>
+<rect x="117" y="172" width="46" height="16" rx="8" fill="#1f0018" stroke="#8020a0" stroke-width="1"/>
+<text x="140" y="183" text-anchor="middle" font-family="'Cinzel', serif" font-size="8" fill="#e070ff" font-weight="700">7 min</text>
+
+<!-- Arrow pointing toward bridge -->
+<defs>
+  <marker id="arrowR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#c08030" opacity="0.8"/>
+  </marker>
+</defs>
+<line x1="160" y1="213" x2="194" y2="213" stroke="#c08030" stroke-width="2" stroke-dasharray="4,3" opacity="0.8" marker-end="url(#arrowR)"/>
+
+<!-- Labels -->
+<text x="85" y="252" text-anchor="middle" font-family="'Cinzel', serif" font-size="10" fill="#a07040" letter-spacing="2">DEZE KANT</text>
+<text x="590" y="252" text-anchor="middle" font-family="'Cinzel', serif" font-size="10" fill="#504030" letter-spacing="2">OVERKANT</text>
+
+<!-- Gorge label -->
+<text x="350" y="270" text-anchor="middle" font-family="'Crimson Text', serif" font-size="11" fill="#304050" font-style="italic">~ diepe kloof ~</text>
+```
+
+  </svg>
+
+  <!-- QUESTION BANNER -->
+
+  <div class="question-banner">
+    <p>Hoe geraken alle 4 over in<span class="time-badge">14 min</span>?</p>
+  </div>
+
+  <!-- RULES -->
+
+  <div class="rules-area">
+    <div class="rule-block">
+      <h3>🔦 De Pitslamp</h3>
+      <p>Er is slechts <strong>één pitslamp</strong>. Zonder lamp kan niemand over de brug. De lamp moet steeds mee over en terug worden gebracht.</p>
+    </div>
+    <div class="rule-block">
+      <h3>🌉 De Brug</h3>
+      <p>De brug draagt maximaal <strong>2 personen</strong> tegelijk. Meer dan twee gaat de brug door de knieën.</p>
+    </div>
+    <div class="rule-block">
+      <h3>⏱️ De Snelheid</h3>
+      <p>Als twee personen samen gaan, loopt men aan de snelheid van de <strong>traagste persoon</strong>.</p>
+    </div>
+    <div class="rule-block">
+      <h3>🎯 Het Doel</h3>
+      <p>Alle <strong>4 personen</strong> moeten aan de overkant geraken. Niemand mag achterblijven aan deze kant.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
