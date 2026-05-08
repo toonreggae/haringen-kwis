@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwis – De Haringen in Oostende</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@400;700&display=swap');
+
+:root {
+–zee: #0a2e4a;
+–golf: #1a6fa8;
+–schuim: #e8f4f8;
+–zand: #f5d98a;
+–oranje: #d4620a;
+–groen: #1e8a4a;
+–groen-licht: #d4f0e0;
+–rood: #c0392b;
+–rood-licht: #fde8e6;
+–wit: #ffffff;
+–tekst-donker: #0d1f2d;
+–kaart-bg: #ffffff;
+–kaart-tekst: #0d1f2d;
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Lato’, sans-serif;
+background: linear-gradient(160deg, #0a2e4a 0%, #0d4a72 100%);
+min-height: 100vh;
+color: var(–wit);
+overflow-x: hidden;
+}
+
+/* Animated wave background */
+body::before {
+content: ‘’;
+position: fixed;
+bottom: 0; left: 0; right: 0;
+height: 120px;
+background: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ viewBox=‘0 0 1440 120’%3E%3Cpath fill=’%231e8bc3’ fill-opacity=‘0.3’ d=‘M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L0,120Z’/%3E%3C/svg%3E”) no-repeat bottom;
+background-size: cover;
+pointer-events: none;
+z-index: 0;
+animation: wave 6s ease-in-out infinite alternate;
+}
+
+@keyframes wave {
+from { transform: translateX(-20px); }
+to { transform: translateX(20px); }
+}
+
+.container {
+max-width: 780px;
+margin: 0 auto;
+padding: 20px 16px 80px;
+position: relative;
+z-index: 1;
+}
+
+/* HEADER */
+header {
+text-align: center;
+padding: 30px 0 24px;
+}
+
+.fish-emoji { font-size: 3rem; display: block; margin-bottom: 8px; animation: bob 2s ease-in-out infinite; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+header h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(1.8rem, 6vw, 2.8rem);
+font-weight: 900;
+color: var(–zand);
+letter-spacing: 1px;
+line-height: 1.1;
+text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+}
+
+header h2 {
+font-size: 1rem;
+font-weight: 400;
+color: rgba(255,255,255,0.75);
+margin-top: 6px;
+letter-spacing: 2px;
+text-transform: uppercase;
+}
+
+.badge {
+display: inline-block;
+background: var(–oranje);
+color: #fff;
+font-size: 0.78rem;
+font-weight: 700;
+letter-spacing: 1.5px;
+text-transform: uppercase;
+padding: 4px 14px;
+border-radius: 20px;
+margin-top: 10px;
+}
+
+/* SCORE BAR */
+#scorebar {
+background: #ffffff;
+border-radius: 14px;
+padding: 12px 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+#scorebar .label { font-size: 0.85rem; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+#score-display { font-family: ‘Playfair Display’, serif; font-size: 1.8rem; color: #0a2e4a; font-weight: 900; }
+#progress-text { font-size: 0.9rem; color: #333; font-weight: 700; }
+
+/* PROGRESS BAR */
+.progress-wrap {
+background: rgba(255,255,255,0.1);
+border-radius: 8px;
+height: 6px;
+margin-bottom: 22px;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–golf), var(–zand));
+border-radius: 8px;
+transition: width 0.5s ease;
+}
+
+/* CARD */
+.card {
+background: #ffffff;
+border: none;
+border-radius: 18px;
+padding: 28px 26px 24px;
+margin-bottom: 16px;
+box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+}
+
+.category-tag {
+font-size: 0.75rem;
+font-weight: 700;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: #1a6fa8;
+margin-bottom: 8px;
+}
+
+.question-num {
+font-size: 0.8rem;
+color: #888;
+margin-bottom: 4px;
+font-weight: 700;
+}
+
+.question-text {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(1.05rem, 3vw, 1.25rem);
+line-height: 1.45;
+color: #0d1f2d;
+margin-bottom: 20px;
+}
+
+/* OPTIONS */
+.options { display: grid; gap: 10px; }
+
+.option-btn {
+background: #f0f6fb;
+border: 2px solid #cce0f0;
+border-radius: 12px;
+color: #000000;
+font-family: ‘Lato’, sans-serif;
+font-size: 0.95rem;
+font-weight: 700;
+padding: 13px 18px;
+text-align: left;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.option-btn:hover:not(:disabled) {
+background: #ddeef8;
+border-color: #1a6fa8;
+transform: translateX(4px);
+}
+
+.option-btn .letter {
+width: 28px; height: 28px;
+border-radius: 50%;
+background: #1a6fa8;
+color: #fff;
+display: flex; align-items: center; justify-content: center;
+font-size: 0.8rem;
+font-weight: 700;
+flex-shrink: 0;
+transition: all 0.2s;
+}
+
+.option-btn.correct {
+background: #d4f0e0;
+border-color: #1e8a4a;
+color: #000000;
+}
+.option-btn.correct .letter { background: #1e8a4a; color: #fff; }
+
+.option-btn.wrong {
+background: #fde8e6;
+border-color: #c0392b;
+color: #000000;
+opacity: 0.85;
+}
+.option-btn.wrong .letter { background: #c0392b; color: #fff; }
+
+.option-btn:disabled { cursor: default; }
+
+/* FEEDBACK */
+.feedback {
+display: none;
+background: #eaf4fb;
+border-radius: 10px;
+padding: 12px 16px;
+margin-top: 14px;
+font-size: 0.9rem;
+line-height: 1.5;
+border-left: 4px solid #1a6fa8;
+color: #0d1f2d;
+font-weight: 600;
+}
+.feedback.show { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* NEXT BUTTON */
+#next-btn {
+display: none;
+width: 100%;
+background: linear-gradient(135deg, var(–golf), var(–zee));
+border: none;
+border-radius: 14px;
+color: #fff;
+font-family: ‘Playfair Display’, serif;
+font-size: 1.1rem;
+padding: 16px;
+cursor: pointer;
+margin-top: 6px;
+transition: all 0.2s;
+letter-spacing: 0.5px;
+}
+#next-btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+#next-btn.show { display: block; animation: fadeIn 0.3s ease; }
+
+/* FINAL SCREEN */
+#final {
+display: none;
+text-align: center;
+padding: 10px 0;
+}
+#final.show { display: block; animation: fadeIn 0.5s ease; }
+
+.trophy { font-size: 5rem; display: block; margin-bottom: 16px; }
+
+#final h2 {
+font-family: ‘Playfair Display’, serif;
+font-size: clamp(1.6rem, 5vw, 2.2rem);
+color: #f5d98a;
+margin-bottom: 8px;
+text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+}
+
+#final-score {
+font-size: clamp(3rem, 10vw, 5rem);
+font-family: ‘Playfair Display’, serif;
+color: #fff;
+font-weight: 900;
+display: block;
+margin: 10px 0 4px;
+text-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+}
+
+#final-msg {
+font-size: 1rem;
+color: #fff;
+background: rgba(0,0,0,0.25);
+border-radius: 12px;
+padding: 14px 20px;
+margin: 12px 0 24px;
+line-height: 1.6;
+font-weight: 700;
+}
+
+#restart-btn {
+background: var(–oranje);
+border: none;
+border-radius: 14px;
+color: #fff;
+font-family: ‘Playfair Display’, serif;
+font-size: 1.1rem;
+padding: 16px 36px;
+cursor: pointer;
+transition: all 0.2s;
+}
+#restart-btn:hover { opacity: 0.88; transform: translateY(-2px); }
+
+/* QUIZ AREA */
+#quiz-area { display: block; }
+
+.divider {
+text-align: center;
+font-size: 1.2rem;
+opacity: 0.3;
+margin: 4px 0 12px;
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="fish-emoji">🐟</span>
+    <h1>De Haringen in Oostende</h1>
+    <h2>Oud-scouts Pelt · Weekendkwis</h2>
+    <span class="badge">20 vragen · Veel plezier!</span>
+  </header>
+
+  <div id="scorebar">
+    <div>
+      <div class="label">Score</div>
+      <div id="score-display">0 / 20</div>
+    </div>
+    <div id="progress-text">Vraag 1 van 20</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progress-fill" style="width:5%"></div>
+  </div>
+
+  <div id="quiz-area">
+    <div class="card" id="question-card">
+      <div class="category-tag" id="cat-tag"></div>
+      <div class="question-num" id="q-num"></div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <button id="next-btn" onclick="nextQuestion()">Volgende vraag →</button>
+  </div>
+
+  <div id="final">
+    <span class="trophy" id="trophy-emoji">🏆</span>
+    <h2>Kwis Afgelopen!</h2>
+    <span id="final-score"></span>
+    <p id="final-msg"></p>
+    <button id="restart-btn" onclick="restart()">🔄 Opnieuw spelen</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // ENSOR
+  {
+    cat: "🎨 James Ensor",
+    q: "In welk jaar werd James Ensor geboren in Oostende?",
+    opts: ["1850","1860","1870","1880"],
+    ans: 1,
+    info: "James Sidney Edouard baron Ensor werd geboren op 13 april 1860 in Oostende. Hij stierf er ook, in 1949 — hij heeft zijn ganse leven in de stad doorgebracht."
+  },
+  {
+    cat: "🎨 James Ensor",
+    q: "In welke straat in Oostende staat het Ensorhuis?",
+    opts: ["Kapellestraat","Vlaanderenstraat","Langestraat","Alfons Pieterslaan"],
+    ans: 1,
+    info: "Het Ensorhuis bevindt zich in de Vlaanderenstraat 29, op minder dan 100 meter van het strand. Ensor leefde en werkte er de laatste 30 jaar van zijn leven."
+  },
+  {
+    cat: "🎨 James Ensor",
+    q: "Welk iconisch schilderij van Ensor hangt in Mu.ZEE in Oostende?",
+    opts: ["De Intrede van Christus in Brussel","Zelfportret met Bloemenhoed","Oude dame met maskers","De Verleiding van de Heilige Antonius"],
+    ans: 1,
+    info: "Het 'Zelfportret met Bloemenhoed' is het iconische werk dat Mu.ZEE bewaart. Mu.ZEE bezit in totaal 28 schilderijen van Ensor, plus talloze tekeningen en etsen."
+  },
+  {
+    cat: "🎨 James Ensor",
+    q: "Welk element komt heel vaak terug in het werk van Ensor?",
+    opts: ["Molens","Maskers en skeletten","Vissersbootjes","Architectuur"],
+    ans: 1,
+    info: "Maskers, skeletten, humor en het groteske zijn typische terugkerende elementen in Ensors werk. Hij groeide op boven de souvenirwinkel van zijn ouders waar carnavalsmaskers werden verkocht."
+  },
+  {
+    cat: "🎨 James Ensor",
+    q: "Hoeveel bekende werken telt het oeuvre van James Ensor ongeveer?",
+    opts: ["Zo'n 150","Zo'n 350","Zo'n 850","Zo'n 2.000"],
+    ans: 2,
+    info: "Er zijn ongeveer 850 werken van Ensors hand bekend. Zijn indrukwekkend oeuvre is tegelijk experimenteel als herkenbaar, met humor en satire als rode draad."
+  },
+
+  // ARNO
+  {
+    cat: "🎸 Arno",
+    q: "Wat was de volledige naam van de zanger Arno?",
+    opts: ["Arno De Backer","Arnold Charles Ernest Hintjens","Arno Van den Berghe","Arnold Jan Pieters"],
+    ans: 1,
+    info: "Arno's volledige naam was Arnold Charles Ernest Hintjens. Hij werd geboren op 21 mei 1949 in Oostende en overleed in 2022."
+  },
+  {
+    cat: "🎸 Arno",
+    q: "Waar start de officiële Arno-wandeling 'Oostende Godverdomme' in Oostende?",
+    opts: ["Aan het Ensorhuis","Aan de Velodroom","Op de Grote Markt","Aan het casino"],
+    ans: 1,
+    info: "De wandeling start aan de Velodroom, de plek waar Arno in de vroege seventies voor het eerst het podium op wandelde. Vandaar trekt de route langs zijn favoriete plekken."
+  },
+  {
+    cat: "🎸 Arno",
+    q: "Welke band stichtte Arno in 1979 in Oostende?",
+    opts: ["Tin Machine","TC Matic","The Strangers","De Kreuners"],
+    ans: 1,
+    info: "TC Matic werd in 1979 in Oostende geboren. Ze werden beschreven als de luidste rockband die België had gehoord, met Arno als charismatisch frontman."
+  },
+  {
+    cat: "🎸 Arno",
+    q: "In welke talen zong Arno zijn liedjes?",
+    opts: ["Alleen Frans","Alleen Nederlands en Frans","Frans, Engels, Nederlands en soms Oostends dialect","Alleen Engelstalig"],
+    ans: 2,
+    info: "Arno zong voornamelijk in het Frans, maar ook in het Engels, Nederlands en soms zelfs in zijn typisch Oostends dialect. Dat maakte hem uniek in de Belgische muziekwereld."
+  },
+  {
+    cat: "🎸 Arno",
+    q: "Wanneer werd Arno ereburger van Oostende?",
+    opts: ["1985","1995","2002","2010"],
+    ans: 2,
+    info: "Arno werd op 27 september 2002 ereburger van Oostende. Hij zei typisch Arno: hij haalde de oorkonde pas 16 jaar later op bij de viering van Raoul Servais."
+  },
+
+  // OOSTENDE & KUST
+  {
+    cat: "🌊 Oostende & de Kust",
+    q: "Hoe wordt Oostende ook wel de 'Koningin der Badsteden' genoemd vanwege haar ligging aan…?",
+    opts: ["De Atlantische Oceaan","De Noordzee","Het Kanaal","De Schelde"],
+    ans: 1,
+    info: "Oostende ligt aan de Noordzee en wordt al meer dan een eeuw 'De Koningin der Badsteden' genoemd. Koningen en keizers kwamen er vroeger op vakantie."
+  },
+  {
+    cat: "🌊 Oostende & de Kust",
+    q: "Wat is het oudste restaurant aan de kust, gelegen op de Albert I-Promenade in Oostende?",
+    opts: ["Bistro Mathilda","Brasserie Du Parc","Au Roy Henry","De Oesterput"],
+    ans: 2,
+    info: "Au Roy Henry op de Albert I Promenade 65 is het oudste restaurant van de kust — al actief since 1951, langs de zeedijk met uitzicht op zee."
+  },
+  {
+    cat: "🌊 Oostende & de Kust",
+    q: "Welk café in Oostende dateert van 1856 en geldt als het oudste café van de stad?",
+    opts: ["Café Lafayette","Het Manuscript","De Pelikaan","Café Rubens"],
+    ans: 2,
+    info: "De Pelikaan is wellicht het oudste nog bestaande café van Oostende. Het gebouw dateert van 1856 en de authentieke charme en het interieur werden steeds bewaard."
+  },
+  {
+    cat: "🌊 Oostende & de Kust",
+    q: "Welk Oostends museum bewaart moderne en hedendaagse kunst van 1880 tot vandaag?",
+    opts: ["Atlantikwall Raversyde","Mu.ZEE","Het Ensorhuis","Museum Amandine"],
+    ans: 1,
+    info: "Mu.ZEE is het enige museum ter wereld dat zich volledig richt op moderne en hedendaagse kunst in België, van 1880 tot nu, en herbergt een grote Ensor-collectie."
+  },
+  {
+    cat: "🌊 Oostende & de Kust",
+    q: "Welk beroemd filmfestival vindt jaarlijks plaats in Oostende?",
+    opts: ["CinéEast","Filmfestival Gent","Filmfestival Oostende","Belpop Film Awards"],
+    ans: 2,
+    info: "Het Filmfestival Oostende vindt jaarlijks plaats. Arno was zelfs de meter van de allereerste editie in 2007 en ontving de eerste ster op de Walk of Fame op de zeedijk."
+  },
+
+  // PELT & SCOUTS
+  {
+    cat: "⚜️ Scouting & Pelt",
+    q: "In welke provincie ligt de gemeente Pelt?",
+    opts: ["Antwerpen","Oost-Vlaanderen","Limburg","Vlaams-Brabant"],
+    ans: 2,
+    info: "Pelt ligt in de provincie Limburg en ontstond in 2019 door de fusie van Neerpelt en Overpelt. De gemeente telt zo'n 25.000 inwoners."
+  },
+  {
+    cat: "⚜️ Scouting & Pelt",
+    q: "Wie richtte de moderne scoutsbeweging op?",
+    opts: ["Ernest Thompson Seton","Robert Baden-Powell","Pierre de Coubertin","James Ensor"],
+    ans: 1,
+    info: "Robert Baden-Powell richtte de scoutsbeweging op. Het eerste scoutskamp vond plaats in 1907 op Brownsea Island in Engeland. Zijn beroemde devies is 'Be Prepared'."
+  },
+  {
+    cat: "⚜️ Scouting & Pelt",
+    q: "Wat is de betekenis van het scoutshandgebaar (de 'groet met drie vingers')?",
+    opts: ["Vriendschap, eerlijkheid en moed","Plicht aan God, anderen en zichzelf","Geloof, hoop en liefde","Natuur, avontuur en kameraadschap"],
+    ans: 1,
+    info: "De drie uitgestrekte vingers staan voor de drie beloften: plicht aan God, aan anderen en aan zichzelf. Het is een universeel symbool van de scoutsbeweging."
+  },
+  {
+    cat: "⚜️ Scouting & Pelt",
+    q: "Een haringpatrouille klinkt goed! Welk dier is het symbool van de Vlaamse Gemeenschap op de officiële vlag?",
+    opts: ["Een leeuw","Een adelaar","Een beer","Een stier"],
+    ans: 0,
+    info: "De Vlaamse vlag toont een zwarte leeuw op gele achtergrond — de 'Vlaamse leeuw'. Het symbool gaat terug tot de middeleeuwen en het graafschap Vlaanderen."
+  },
+  {
+    cat: "🐟 Bonusvraag",
+    q: "Welk typisch Oostends visgerecht is een absolute klassieker en bestaat uit grijze garnalen in een gefrituurde kroket?",
+    opts: ["Mosselen-friet","Garnaalkroket","Haring met uitjes","Paling in 't groen"],
+    ans: 1,
+    info: "De garnaalkroket is dé specialiteit van de Belgische kust! En wist je dat Arno zelf ook een recept voor garnaalkroketten had? In het tv-programma 'Krokant' toonde hij hoe je de roux laat 'zingen'."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function render() {
+  const q = questions[current];
+  document.getElementById('cat-tag').textContent = q.cat;
+  document.getElementById('q-num').textContent = `Vraag ${current + 1} van ${questions.length}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('progress-text').textContent = `Vraag ${current + 1} van ${questions.length}`;
+  document.getElementById('score-display').textContent = `${score} / ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${((current) / questions.length) * 100 + 5}%`;
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${letters[i]}</span>${o}`;
+    btn.onclick = () => selectAnswer(i);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('next-btn').className = '';
+  answered = false;
+}
+
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.option-btn');
+
+  btns.forEach(b => b.disabled = true);
+
+  if (i === q.ans) {
+    btns[i].classList.add('correct');
+    score++;
+  } else {
+    btns[i].classList.add('wrong');
+    btns[q.ans].classList.add('correct');
+  }
+
+  const fb = document.getElementById('feedback');
+  fb.innerHTML = (i === q.ans ? '✅ ' : '❌ ') + q.info;
+  fb.className = 'feedback show';
+
+  document.getElementById('score-display').textContent = `${score} / ${questions.length}`;
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = current < questions.length - 1 ? 'Volgende vraag →' : '🏁 Bekijk de score!';
+  nextBtn.className = 'show';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    showFinal();
+  } else {
+    render();
+  }
+}
+
+function showFinal() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('scorebar').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  const f = document.getElementById('final');
+  f.className = 'show';
+
+  document.getElementById('final-score').textContent = `${score} / 20`;
+
+  let emoji = '🐟';
+  let msg = '';
+  if (score >= 18) { emoji = '🏆'; msg = 'Perfecte haringen! Jullie kennen Oostende beter dan de garnalen zelf. Proficiat, kampioenen!'; }
+  else if (score >= 14) { emoji = '🥇'; msg = 'Uitstekend! De Haringen van Pelt swemmen hier in de top. Lekker bezig, compagnons!'; }
+  else if (score >= 10) { emoji = '👍'; msg = 'Goed gedaan! Genoeg kennis voor een gezellig weekend aan zee. Meer oefening na de garnaalkroketten!'; }
+  else if (score >= 6) { emoji = '🌊'; msg = 'Matige score — maar het plezier telt! Volgende keer iets minder Duvel op voorhand?'; }
+  else { emoji = '😂'; msg = 'Jullie hebben duidelijk meer tijd gespendeerd in het café dan in de musea. Maar jullie zijn wel de vrolijkste vis in de zee!'; }
+
+  document.getElementById('trophy-emoji').textContent = emoji;
+  document.getElementById('final-msg').textContent = msg;
+}
+
+function restart() {
+  current = 0; score = 0; answered = false;
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('scorebar').style.display = 'flex';
+  document.querySelector('.progress-wrap').style.display = 'block';
+  document.getElementById('final').className = '';
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
